@@ -93,7 +93,7 @@ struct loadtxt {
         for (size_t i = 0; i < data.size(); i++)
             data[i].reserve(nlines);
         
-        for (size_t i = 0; i < nlines; i++)
+        for (int i = 0; i < nlines; i++)
         {
             int k = 0;
             for (auto j : cols)
