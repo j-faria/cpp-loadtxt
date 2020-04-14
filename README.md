@@ -1,2 +1,3 @@
 # cpp-loadtxt
-numpy.loadtxt in C++
+
+`numpy.loadtxt` in C++
