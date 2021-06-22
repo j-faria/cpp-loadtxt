@@ -24,7 +24,7 @@ struct loadtxt {
     loadtxt& usecols(vector<int> usecols) { _usecols = usecols; return *this; }
     loadtxt& max_rows(int max_rows) { _max_rows = max_rows; return *this; }
 
-    vector<vector<double>> call()
+    vector<vector<double>> operator()()
     {
         ifstream infile( _fname );
         
