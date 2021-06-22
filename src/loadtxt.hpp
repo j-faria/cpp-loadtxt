@@ -30,7 +30,7 @@ struct loadtxt {
         
         // ignore first `skiprows` lines
         static const int max_line = 65536;
-        for (int i = 0 ; i <= _skiprows ; i++)
+        for (int i = 0 ; i < _skiprows ; i++)
             infile.ignore(max_line, '\n');
 
         vector<double> record;
@@ -44,7 +44,7 @@ struct loadtxt {
             string line;
             getline(infile, line);
 
-            if (infile.eof())
+            if (infile.eof() && line.empty())
                 break;
             
             if (line.find(_comments, 0) == 0)
@@ -60,6 +60,7 @@ struct loadtxt {
                 record.push_back(f);
 
             _filedata.push_back(record);
+
         }
         
         // complain if something went wrong
