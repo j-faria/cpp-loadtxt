@@ -109,18 +109,29 @@ struct loadtxt {
 
     ~loadtxt(){};
 
-public:
-    vector<vector<double>> data;
+    public:
+        vector<vector<double>> data;
 
-private:
-    string _fname;
-    string _comments = "#";
-    string _delimiter = " ";
-    int _skiprows = 0;
-    vector<int> _usecols;
-    int _max_rows;
-    vector<vector<double>> _filedata;
+    private:
+        string _fname;
+        string _comments = "#";
+        string _delimiter = " ";
+        int _skiprows = 0;
+        vector<int> _usecols;
+        int _max_rows;
+        vector<vector<double>> _filedata;
 };
+
+
+struct loadrdb : loadtxt {
+    loadrdb(string fname) : loadtxt(fname), _fname(fname) { skiprows(2); }
+
+    private:
+        string _fname;
+};
+
+
+
 
     /*
         Load data from a text file.
