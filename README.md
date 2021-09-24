@@ -9,7 +9,7 @@ using namespace std;
 
 int main() {
     auto fname = "data.txt";
-    auto data = loadtxt(fname).skiprows(0).comments("#").call();
+    auto data = loadtxt(fname).skiprows(0).comments("#")();
 
     return 0;
 }
