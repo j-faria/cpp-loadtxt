@@ -27,6 +27,10 @@ struct loadtxt {
     vector<vector<double>> operator()()
     {
         ifstream infile( _fname );
+        if (infile.fail()) {
+            cerr << "Could not read file (" << _fname << ")!\n";
+            exit(1);
+        }
         
         // ignore first `skiprows` lines
         static const int max_line = 65536;
