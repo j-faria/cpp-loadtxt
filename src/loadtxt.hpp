@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ struct loadtxt {
     // Optional arguments
     // ('this' is returned for chaining)
     loadtxt& comments(string comments) { _comments = comments; return *this; }
-    loadtxt& delimiter(string delimiter) { _delimiter = delimiter; return *this; }
+    loadtxt& delimiters(string delimiters) { _delimiters = delimiters; return *this; }
     loadtxt& skiprows(int skiprows) { _skiprows = skiprows; return *this; }
     loadtxt& usecols(vector<int> usecols) { _usecols = usecols; return *this; }
     loadtxt& max_rows(int max_rows) { _max_rows = max_rows; return *this; }
@@ -45,8 +46,10 @@ struct loadtxt {
             infile.ignore(max_line, '\n');
 
         vector<double> record;
+        size_t rows_read = 0;
 
-        while (true)
+        // read each line
+        while (rows_read < _max_rows || _max_rows == 0)
         {
             // clear the record before reading
             record.clear();
@@ -61,23 +64,71 @@ struct loadtxt {
             if (line.find(_comments, 0) == 0)
                 continue;
 
-            // use a stringstream to separate the fields out of the line
-            stringstream ss(line);
+            // // use a stringstream to separate the fields out of the line
+            // stringstream ss(line);
 
-            // convert each field to a double
-            // and add the newly-converted field to the end of the record
-            double f;
-            while (ss >> f)
-                record.push_back(f);
+            size_t found = line.find_first_of(_delimiters);
+            while (found != string::npos) {
+                string cell = line.substr(0, found);
+                if (!cell.empty()) {
+                    // convert the field to a double
+                    try
+                    {
+                        double val = stod(cell);
+                        record.push_back(val);
+                    }
+                    catch(const std::invalid_argument& e)
+                    {
+                        std::cerr << "loadtxt: while reading file \"" << _fname << "\", ";
+                        std::cerr << "could not convert field '" << cell << "' to double ";
+                        std::cerr << "at row " << rows_read << " column " << record.size() + 1 << "\n";
+                        throw;
+                    }
+                    
+                }
+                line.erase(0, found + 1);
+                found = line.find_first_of(_delimiters);
+
+                if (found == string::npos) {
+                    if (line.empty()) continue;
+                    try
+                    {
+                        double val = stod(line);
+                        record.push_back(val);
+                    }
+                    catch(const std::invalid_argument& e)
+                    {
+                        std::cerr << "loadtxt: while reading file \"" << _fname << "\", ";
+                        std::cerr << "could not convert field '" << line << "' to double ";
+                        std::cerr << "at row " << rows_read << " column " << record.size() + 1 << "\n";
+                        // throw;
+                    }
+                }
+            }
+            // // convert each field to a double
+            // // and add the newly-converted field to the end of the record
+            // string cell;
+            // double f;
+
+            // while (getline(ss, cell, _delimiters[0])) {
+            //     if (cell.empty()) continue;
+            //     f = stod(cell);   
+            //     record.push_back(f);
+            // }
+
+            // while (ss >> f) {
+            //         record.push_back(f);
+            // }
 
             _filedata.push_back(record);
 
+            rows_read++;
         }
         
         // complain if something went wrong
-        if (!infile.eof())
+        if (rows_read != _max_rows && !infile.eof())
         {
-            cout << "Could not read file (" << _fname << ")!\n";
+            cout << "loadtxt: could not read file (" << _fname << ")!\n";
             exit(1);
         }
 
@@ -131,7 +182,7 @@ struct loadtxt {
     private:
         string _fname;
         string _comments = "#";
-        string _delimiter = " ";
+        string _delimiters = " \t,";
         int _skiprows = 0;
         vector<int> _usecols;
         int _max_rows = 0;
