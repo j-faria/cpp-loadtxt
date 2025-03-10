@@ -1,22 +1,8 @@
 CXX		  := g++
 CXX_FLAGS := -std=c++17 -O3
 
-BIN		:= bin
-SRC		:= src
-INCLUDE	:= include
-LIB		:= lib
+OPT = 
 
-LIBRARIES	:=
-EXECUTABLE	:= main
-
-
-all: $(BIN)/$(EXECUTABLE)
-
-run: all
-	@ ./$(BIN)/$(EXECUTABLE)
-
-$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
-	@ $(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
-
-clean:
-	@ -rm -rf $(BIN)/*
+all:
+	g++ -std=c++17 -Wall -Wextra -pedantic $(OPT) -o main .\src\loadtxt.cpp
+	./main
