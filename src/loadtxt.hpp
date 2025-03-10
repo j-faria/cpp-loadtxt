@@ -134,13 +134,13 @@ struct loadtxt {
 
         infile.close();
 
-        int nlines = _filedata.size();
+        size_t nlines = _filedata.size();
 
         // only read _max_rows of content
         if (_max_rows != 0)
             nlines = min(nlines, _max_rows);
 
-        int ncols = _filedata[0].size();
+        size_t ncols = _filedata[0].size();
 
         vector<int> cols;
         if (_usecols.size() == 0)
@@ -161,7 +161,7 @@ struct loadtxt {
         for (size_t i = 0; i < data.size(); i++)
             data[i].reserve(nlines);
         
-        for (int i = 0; i < nlines; i++)
+        for (size_t i = 0; i < nlines; i++)
         {
             int k = 0;
             for (auto j : cols)
