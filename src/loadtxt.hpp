@@ -22,7 +22,7 @@ struct loadtxt {
     // ('this' is returned for chaining)
     loadtxt& comments(string comments) { _comments = comments; return *this; }
     loadtxt& delimiters(string delimiters) { _delimiters = delimiters; return *this; }
-    loadtxt& skiprows(int skiprows) { _skiprows = skiprows; return *this; }
+    loadtxt& skiprows(size_t skiprows) { _skiprows = skiprows; return *this; }
     loadtxt& usecols(vector<int> usecols) { _usecols = usecols; return *this; }
     loadtxt& max_rows(int max_rows) { _max_rows = max_rows; return *this; }
 
@@ -42,7 +42,7 @@ struct loadtxt {
         
         // ignore first `skiprows` lines
         static const int max_line = 65536;
-        for (int i = 0 ; i < _skiprows ; i++)
+        for (size_t i = 0; i < _skiprows; i++)
             infile.ignore(max_line, '\n');
 
         vector<double> record;
@@ -183,9 +183,9 @@ struct loadtxt {
         string _fname;
         string _comments = "#";
         string _delimiters = " \t,";
-        int _skiprows = 0;
+        size_t _skiprows = 0;
         vector<int> _usecols;
-        int _max_rows = 0;
+        size_t _max_rows = 0;
         vector<vector<double>> _filedata;
 };
 
